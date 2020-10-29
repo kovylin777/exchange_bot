@@ -3,6 +3,7 @@ package requester;
 import models.Price;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class PriceProvider {
 
@@ -10,12 +11,33 @@ public class PriceProvider {
 
     private ArrayList<Price> prices = new ArrayList<>();
 
-    private void setPrices() {
+    private Price bestSellingPrice;
+
+    private Price bestBuyingPrice;
+
+    public void setPrices() {
         prices.add(OBMENKA_KH_UA.getPrice());
+        bestBuyingPrice = compare(true);
+        bestSellingPrice = compare(false);
     }
 
-    public Price getBestPrice() {
-        setPrices();
-        return prices.get(0);
+    public Price getBestBuyingPrice() {
+        return bestBuyingPrice;
     }
+
+    public Price getBestSellingPrice() {
+        return bestSellingPrice;
+    }
+
+    private Price compare(boolean isBestBuying) {
+        if (isBestBuying) {
+            return prices.stream()
+                .max(Comparator.comparing(Price::getBuyingRate)).orElse(new Price(null));
+        } else {
+            return prices.stream()
+                .min(Comparator.comparing(Price::getSellingRate)).orElse(new Price(null));
+        }
+    }
+
+
 }

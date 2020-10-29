@@ -42,9 +42,13 @@ public class HelloBot extends AbilityBot {
           If the update does not have a message, but it has a callback query, the chatId and user will be fetched from that query.
            */
                 // Custom sender implementation
-                Price bestPrice = PRICE_PROVIDER.getBestPrice();
-                sender.send("Самый выгодный курс покупки USD:\n" + bestPrice.getName() + ": " + bestPrice.getBuyingRate(), ctx.chatId());
-                sender.send("Самый выгодный курс продажи USD:\n" + bestPrice.getName() + ": " + bestPrice.getSellingRate(), ctx.chatId());
+                PRICE_PROVIDER.setPrices();
+                Price bestBuyingPrice = PRICE_PROVIDER.getBestBuyingPrice();
+                Price bestSellingPrice = PRICE_PROVIDER.getBestSellingPrice();
+                sender.send("Самый выгодный курс покупки USD:\n" +
+                    bestBuyingPrice.getName() + ": " + bestBuyingPrice.getBuyingRate(), ctx.chatId());
+                sender.send("Самый выгодный курс продажи USD:\n" +
+                    bestSellingPrice.getName() + ": " + bestSellingPrice.getSellingRate(), ctx.chatId());
             })
             .build();
     }
