@@ -2,6 +2,7 @@ package requester;
 
 import models.Price;
 import requester.managers.KharkovObmenkaUaManager;
+import requester.managers.Money24Manager;
 import requester.managers.ObmenkaKhUaManager;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class PriceProvider {
     public void setPrices() {
         prices.add(new ObmenkaKhUaManager().getPrice());
         prices.add(new KharkovObmenkaUaManager().getPrice());
+        prices.add(new Money24Manager().getPrice());
         bestBuyingPrice = compare(true);
         bestSellingPrice = compare(false);
     }
