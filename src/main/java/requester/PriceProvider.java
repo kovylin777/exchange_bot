@@ -1,13 +1,13 @@
 package requester;
 
 import models.Price;
+import requester.managers.KharkovObmenkaUaManager;
+import requester.managers.ObmenkaKhUaManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public class PriceProvider {
-
-    private final ObmenkaKhUaManager OBMENKA_KH_UA = new ObmenkaKhUaManager();
 
     private ArrayList<Price> prices = new ArrayList<>();
 
@@ -16,7 +16,8 @@ public class PriceProvider {
     private Price bestBuyingPrice;
 
     public void setPrices() {
-        prices.add(OBMENKA_KH_UA.getPrice());
+        prices.add(new ObmenkaKhUaManager().getPrice());
+        prices.add(new KharkovObmenkaUaManager().getPrice());
         bestBuyingPrice = compare(true);
         bestSellingPrice = compare(false);
     }

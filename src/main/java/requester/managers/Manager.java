@@ -1,10 +1,10 @@
-package requester;
+package requester.managers;
 
 import models.Price;
 
 public interface Manager {
 
-    public Price getPrice();
+    Price getPrice();
 
     void setPrice();
 }

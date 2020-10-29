@@ -1,4 +1,4 @@
-package requester;
+package requester.managers;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;

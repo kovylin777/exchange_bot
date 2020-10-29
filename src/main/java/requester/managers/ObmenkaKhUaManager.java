@@ -1,4 +1,4 @@
-package requester;
+package requester.managers;
 
 import models.Price;
 import org.jsoup.nodes.Document;
