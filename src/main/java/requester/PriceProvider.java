@@ -4,6 +4,7 @@ import models.Price;
 import requester.managers.KharkovObmenkaUaManager;
 import requester.managers.Money24Manager;
 import requester.managers.ObmenkaKhUaManager;
+import requester.managers.ObmenkaKharkovUaManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,6 +21,7 @@ public class PriceProvider {
         prices.add(new ObmenkaKhUaManager().getPrice());
         prices.add(new KharkovObmenkaUaManager().getPrice());
         prices.add(new Money24Manager().getPrice());
+        prices.add(new ObmenkaKharkovUaManager().getPrice());
         bestBuyingPrice = compare(true);
         bestSellingPrice = compare(false);
     }
