@@ -22,7 +22,12 @@ public class BaseManager {
 
     protected BigDecimal getDecimal(String string) {
         BigDecimal a = new BigDecimal(string);
-        BigDecimal floored = a.setScale(2, BigDecimal.ROUND_DOWN);
+        BigDecimal floored;
+        if (a.compareTo(new BigDecimal(1)) < 0) {
+            floored = a.setScale(3, BigDecimal.ROUND_DOWN);
+        } else {
+            floored = a.setScale(2, BigDecimal.ROUND_DOWN);
+        }
         return floored;
     }
 

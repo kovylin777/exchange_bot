@@ -1,23 +1,16 @@
 package requester;
 
 import lombok.Getter;
-import models.Price;
+import models.Company;
 import requester.managers.*;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
+import java.util.*;
 
 public class PriceProvider {
 
-    private ArrayList<Price> prices = new ArrayList<>();
-
-    @Getter
-    public static Price bestSellingPrice;
-
-    @Getter
-    public static Price bestBuyingPrice;
+    private static ArrayList<Company> companies;
 
     @Getter
     private static Date actualityDate;
@@ -27,27 +20,45 @@ public class PriceProvider {
 
     public static boolean isUpdatingNow = false;
 
-    public void setPrices() {
+    public void setCompanies() {
         isUpdatingNow = true;
         actualityDate = new Date(System.currentTimeMillis());
-        prices = new ArrayList<>();
-        prices.add(new ObmenkaKhUaManager().getPrice());
-        prices.add(new KharkovObmenkaUaManager().getPrice());
-        prices.add(new Money24Manager().getPrice());
-        prices.add(new ObmenkaKharkovUaManager().getPrice());
-        prices.add(new ObmenkaKharkivUaManager().getPrice());
-        bestBuyingPrice = compare(true);
-        bestSellingPrice = compare(false);
+        companies = new ArrayList<>();
+        companies.add(new ObmenkaKhUaManager().getCompany());
+        companies.add(new KharkovObmenkaUaManager().getCompany());
+        companies.add(new Money24Manager().getCompany());
+        companies.add(new ObmenkaKharkovUaManager().getCompany());
+        companies.add(new ObmenkaKharkivUaManager().getCompany());
         isUpdatingNow = false;
     }
 
-    private Price compare(boolean isBestBuying) {
-        if (isBestBuying) {
-            return prices.stream()
-                .max(Comparator.comparing(Price::getBuyingRate)).orElse(new Price(null));
-        } else {
-            return prices.stream()
-                .min(Comparator.comparing(Price::getSellingRate)).orElse(new Price(null));
+    public Company getBestBuyingCompanyFor(String currencyCode) {
+        Map<Integer, BigDecimal> currencyRates = new HashMap<>();
+        for (Company company : companies) {
+            try {
+                currencyRates.put(company.getId(), company.getCurrencyRates()
+                    .stream().filter(e -> e.getCode().equals(currencyCode))
+                    .findFirst().get().getBuyingRate());
+            } catch (NoSuchElementException e) {
+                System.out.println("Company with ID " + company.getId() + " not contains data for " + currencyCode);
+            }
         }
+        Integer topCompanyId = Collections.max(currencyRates.entrySet(), Map.Entry.comparingByValue()).getKey();
+        return companies.stream().filter(e -> e.getId() == topCompanyId).findFirst().get();
+    }
+
+    public Company getBestSellingCompanyFor(String currencyCode) {
+        Map<Integer, BigDecimal> currencyRates = new HashMap<>();
+        for (Company company : companies) {
+            try {
+                currencyRates.put(company.getId(), company.getCurrencyRates()
+                    .stream().filter(e -> e.getCode().equals(currencyCode))
+                    .findFirst().get().getSellingRate());
+            } catch (NoSuchElementException e) {
+                System.out.println("Company with ID " + company.getId() + " not contains data for " + currencyCode);
+            }
+        }
+        Integer topCompanyId = Collections.min(currencyRates.entrySet(), Map.Entry.comparingByValue()).getKey();
+        return companies.stream().filter(e -> e.getId() == topCompanyId).findFirst().get();
     }
 }

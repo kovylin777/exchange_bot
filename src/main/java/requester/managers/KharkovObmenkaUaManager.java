@@ -1,35 +1,58 @@
 package requester.managers;
 
-import models.Price;
+import models.Company;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
+import requester.util.CurrencyManager;
+
+import java.math.BigDecimal;
 
 public class KharkovObmenkaUaManager extends BaseManager implements Manager {
 
     private final static String URL = "https://kharkov.obmenka.ua/";
 
-    private Price price = new Price(URL);
+    private Company company;
 
-    @Override public Price getPrice() {
+    @Override public Company getCompany() {
+        company = new Company(URL);
         setMetadata();
-        setPrice();
-        return price;
+        setCompanyPrice();
+        return company;
     }
 
-    public void setPrice() {
+    public void setCompanyPrice() {
         Document doc = getHtmlDocument(URL);
+        setCompanyPriceUsd(doc);
+        setCompanyPriceEur(doc);
+        setCompanyPriceRub(doc);
+        System.out.println(company);
+    }
 
-        Elements usdBuyElements = doc.getElementsByAttributeValueMatching("href", "/ru/USD-UAH").select(".buy");
-        Elements usdSaleElements = doc.getElementsByAttributeValueMatching("href", "/ru/USD-UAH").select(".sell");
-        price.setBuyingRate(getDecimal(usdBuyElements.get(0).text()));
-        price.setSellingRate(getDecimal(usdSaleElements.get(0).text()));
-        System.out.println(price);
+    private void setCompanyPriceRub(Document doc) {
+        company.addCurrency(CurrencyManager.getObjectRUB(getBuyPrice(doc, "RUB"), getSellPrice(doc, "RUB")));
+    }
+
+    private void setCompanyPriceEur(Document doc) {
+        company.addCurrency(CurrencyManager.getObjectEUR(getBuyPrice(doc, "EUR"), getSellPrice(doc, "EUR")));
+    }
+
+    private void setCompanyPriceUsd(Document doc) {
+        company.addCurrency(CurrencyManager.getObjectUSD(getBuyPrice(doc, "USD"), getSellPrice(doc, "USD")));
+    }
+
+    private BigDecimal getBuyPrice(Document doc, String code) {
+        return getDecimal(doc.getElementsByAttributeValueMatching("href", "/ru/" + code + "-UAH")
+            .select(".buy").get(0).text());
+    }
+
+    private BigDecimal getSellPrice(Document doc, String code) {
+        return getDecimal(doc.getElementsByAttributeValueMatching("href", "/ru/" + code + "-UAH")
+            .select(".sell").get(0).text());
     }
 
     @Override public void setMetadata() {
-        price.setId(1);
-        price.setName("kharkov.obmenka.ua");
-        price.setAddress("пл. Павловская, 2");
-        price.setPhone("+380965701110");
+        company.setId(1);
+        company.setName("kharkov.obmenka.ua");
+        company.setAddress("пл. Павловская, 2");
+        company.setPhone("+380965701110");
     }
 }

@@ -1,37 +1,77 @@
 package requester.managers;
 
-import models.Price;
+import models.Company;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import requester.util.CurrencyManager;
 
 public class ObmenkaKharkovUaManager extends BaseManager implements Manager {
 
-    private final static String URL = "https://obmenka.kharkov.ua/usd-uah";
+    private final static String URL = "https://obmenka.kharkov.ua/";
 
-    private Price price = new Price(URL);
+    private Company company;
 
-    @Override public Price getPrice() {
+    @Override public Company getCompany() {
+        company = new Company(URL);
         setMetadata();
-        setPrice();
-        return price;
+        setCompanyPrice();
+        return company;
     }
 
-    public void setPrice() {
-        Document doc = getHtmlDocument(URL);
-        Element buyUsdElement = doc.getElementsByAttributeValueMatching("data-title", "Покупка")
+    public void setCompanyPrice() {
+        setCompanyPriceUsd();
+        setCompanyPriceEur();
+        setCompanyPricePln();
+        setCompanyPriceRub();
+        System.out.println(company);
+    }
+
+    private void setCompanyPriceUsd() {
+        Document doc = getHtmlDocument(URL + "usd-uah");
+        Element buyElement = getBuyElement(doc);
+        Element sellElement = getSellElement(doc);
+        company.addCurrency(CurrencyManager
+            .getObjectUSD(getDecimal(buyElement.text()), getDecimal(sellElement.text())));
+    }
+
+    private void setCompanyPriceEur() {
+        Document doc = getHtmlDocument(URL + "eur-uah");
+        Element buyElement = getBuyElement(doc);
+        Element sellElement = getSellElement(doc);
+        company.addCurrency(CurrencyManager
+            .getObjectEUR(getDecimal(buyElement.text()), getDecimal(sellElement.text())));
+    }
+
+    private void setCompanyPricePln() {
+        Document doc = getHtmlDocument(URL + "pln-uah");
+        Element buyElement = getBuyElement(doc);
+        Element sellElement = getSellElement(doc);
+        company.addCurrency(CurrencyManager
+            .getObjectPLN(getDecimal(buyElement.text()), getDecimal(sellElement.text())));
+    }
+
+    private void setCompanyPriceRub() {
+        Document doc = getHtmlDocument(URL + "rub-uah");
+        Element buyElement = getBuyElement(doc);
+        Element sellElement = getSellElement(doc);
+        company.addCurrency(CurrencyManager
+            .getObjectRUB(getDecimal(buyElement.text()), getDecimal(sellElement.text())));
+    }
+
+    private Element getBuyElement(Document doc) {
+        return doc.getElementsByAttributeValueMatching("data-title", "Покупка")
             .select(".pair__block-retail").select(".pair__block-num").first();
-        Element sellUsdElement = doc.getElementsByAttributeValueMatching("data-title", "Продажа")
+    }
+
+    private Element getSellElement(Document doc) {
+        return doc.getElementsByAttributeValueMatching("data-title", "Продажа")
             .select(".pair__block-retail").select(".pair__block-num").first();
-        price.setBuyingRate(getDecimal(buyUsdElement.text()));
-        price.setSellingRate(getDecimal(sellUsdElement.text()));
-        System.out.println(price);
     }
 
     @Override public void setMetadata() {
-        price.setId(4);
-        price.setName("КИТ Group");
-        price.setAddress("ул. Кооперативная 6/8 (за магазином \"Сладкий Мир\")");
-        price.setPhone("+380800211053");
+        company.setId(4);
+        company.setName("КИТ Group");
+        company.setAddress("ул. Кооперативная 6/8 (за магазином \"Сладкий Мир\")");
+        company.setPhone("+380800211053");
     }
 }

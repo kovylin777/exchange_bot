@@ -1,12 +1,12 @@
 package requester.managers;
 
-import models.Price;
+import models.Company;
 
 public interface Manager {
 
-    Price getPrice();
+    Company getCompany();
 
-    void setPrice();
+    void setCompanyPrice();
 
     void setMetadata();
 }

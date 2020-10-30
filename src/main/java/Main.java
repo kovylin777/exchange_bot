@@ -22,7 +22,7 @@ public class Main {
 
         Runnable runnable = new Runnable() {
             public void run() {
-                new PriceProvider().setPrices();
+                new PriceProvider().setCompanies();
             }
         };
         ScheduledExecutorService service = Executors
