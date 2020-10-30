@@ -7,4 +7,6 @@ public interface Manager {
     Price getPrice();
 
     void setPrice();
+
+    void setMetadata();
 }

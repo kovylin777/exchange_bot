@@ -12,6 +12,7 @@ public class ObmenkaKharkovUaManager extends BaseManager implements Manager {
     private Price price = new Price(URL);
 
     @Override public Price getPrice() {
+        setMetadata();
         setPrice();
         return price;
     }
@@ -25,5 +26,12 @@ public class ObmenkaKharkovUaManager extends BaseManager implements Manager {
         price.setBuyingRate(getDecimal(buyUsdElement.text()));
         price.setSellingRate(getDecimal(sellUsdElement.text()));
         System.out.println(price);
+    }
+
+    @Override public void setMetadata() {
+        price.setId(4);
+        price.setName("КИТ Group");
+        price.setAddress("ул. Кооперативная 6/8 (за магазином \"Сладкий Мир\")");
+        price.setPhone("+380800211053");
     }
 }

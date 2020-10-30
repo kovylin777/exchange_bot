@@ -12,6 +12,7 @@ public class ObmenkaKhUaManager extends BaseManager implements Manager {
     private Price price = new Price(URL);
 
     @Override public Price getPrice() {
+        setMetadata();
         setPrice();
         return price;
     }
@@ -27,5 +28,13 @@ public class ObmenkaKhUaManager extends BaseManager implements Manager {
         price.setBuyingRate(getDecimal(usdBuyElements.get(0).html()));
         price.setSellingRate(getDecimal(usdSaleElements.get(0).html()));
         System.out.println(price);
+    }
+
+    @Override public void setMetadata() {
+        price.setId(5);
+        price.setName("obmenka.kh.ua");
+        price.setAddress("пр. Героев Сталинграда, 1А\nул. Чеботарская, 5\nпл. Конституции, 1\nпр. Героев Труда, 6\n"
+            + "Сумской рынок\nул. Рождественская, 33");
+        price.setPhone("+380966028040");
     }
 }

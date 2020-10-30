@@ -11,6 +11,7 @@ public class ObmenkaKharkivUaManager extends BaseManager implements Manager {
     private Price price = new Price(URL);
 
     @Override public Price getPrice() {
+        setMetadata();
         setPrice();
         return price;
     }
@@ -24,5 +25,12 @@ public class ObmenkaKharkivUaManager extends BaseManager implements Manager {
         price.setBuyingRate(getDecimal(buyUsdElement.text()));
         price.setSellingRate(getDecimal(sellUsdElement.text()));
         System.out.println(price);
+    }
+
+    @Override public void setMetadata() {
+        price.setId(3);
+        price.setName("obmenka.kharkiv.ua");
+        price.setAddress("ул. Полтавский шлях 23/25\nАвторынок Лоск");
+        price.setPhone("+380677517434");
     }
 }

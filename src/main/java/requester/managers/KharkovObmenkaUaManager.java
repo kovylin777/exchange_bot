@@ -11,6 +11,7 @@ public class KharkovObmenkaUaManager extends BaseManager implements Manager {
     private Price price = new Price(URL);
 
     @Override public Price getPrice() {
+        setMetadata();
         setPrice();
         return price;
     }
@@ -23,5 +24,12 @@ public class KharkovObmenkaUaManager extends BaseManager implements Manager {
         price.setBuyingRate(getDecimal(usdBuyElements.get(0).text()));
         price.setSellingRate(getDecimal(usdSaleElements.get(0).text()));
         System.out.println(price);
+    }
+
+    @Override public void setMetadata() {
+        price.setId(1);
+        price.setName("kharkov.obmenka.ua");
+        price.setAddress("пл. Павловская, 2");
+        price.setPhone("+380965701110");
     }
 }

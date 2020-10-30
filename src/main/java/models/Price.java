@@ -7,13 +7,21 @@ import java.math.BigDecimal;
 @Data
 public class Price {
 
+    private int id;
+
     private String name;
+
+    private String url;
 
     private BigDecimal buyingRate;
 
     private BigDecimal sellingRate;
 
-    public Price(String name) {
-        setName(name);
+    private String address;
+
+    private String phone;
+
+    public Price(String url) {
+        setUrl(url);
     }
 }
