@@ -49,6 +49,4 @@ public class PriceProvider {
                 .min(Comparator.comparing(Price::getSellingRate)).orElse(new Price(null));
         }
     }
-
-
 }
