@@ -1,6 +1,7 @@
 package models;
 
 import lombok.Data;
+import requester.PriceProvider;
 
 import java.math.BigDecimal;
 
@@ -23,5 +24,14 @@ public class Price {
 
     public Price(String url) {
         setUrl(url);
+    }
+
+    @Override
+    public String toString() {
+        return
+            "[" +PriceProvider.getDateFormatter().format(PriceProvider.getActualityDate()) + "] " +
+            url + " : " +
+            "Buy = " + buyingRate + ", " +
+            "Sell = " + sellingRate;
     }
 }

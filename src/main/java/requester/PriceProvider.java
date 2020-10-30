@@ -29,6 +29,7 @@ public class PriceProvider {
 
     public void setPrices() {
         isUpdatingNow = true;
+        actualityDate = new Date(System.currentTimeMillis());
         prices.add(new ObmenkaKhUaManager().getPrice());
         prices.add(new KharkovObmenkaUaManager().getPrice());
         prices.add(new Money24Manager().getPrice());
@@ -36,7 +37,6 @@ public class PriceProvider {
         prices.add(new ObmenkaKharkivUaManager().getPrice());
         bestBuyingPrice = compare(true);
         bestSellingPrice = compare(false);
-        actualityDate = new Date(System.currentTimeMillis());
         isUpdatingNow = false;
     }
 
