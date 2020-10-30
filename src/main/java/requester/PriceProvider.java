@@ -1,20 +1,34 @@
 package requester;
 
+import lombok.Getter;
 import models.Price;
 import requester.managers.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 
 public class PriceProvider {
 
     private ArrayList<Price> prices = new ArrayList<>();
 
-    private Price bestSellingPrice;
+    @Getter
+    public static Price bestSellingPrice;
 
-    private Price bestBuyingPrice;
+    @Getter
+    public static Price bestBuyingPrice;
+
+    @Getter
+    private static Date actualityDate;
+
+    @Getter
+    public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm");
+
+    public static boolean isUpdatingNow = false;
 
     public void setPrices() {
+        isUpdatingNow = true;
         prices.add(new ObmenkaKhUaManager().getPrice());
         prices.add(new KharkovObmenkaUaManager().getPrice());
         prices.add(new Money24Manager().getPrice());
@@ -22,14 +36,8 @@ public class PriceProvider {
         prices.add(new ObmenkaKharkivUaManager().getPrice());
         bestBuyingPrice = compare(true);
         bestSellingPrice = compare(false);
-    }
-
-    public Price getBestBuyingPrice() {
-        return bestBuyingPrice;
-    }
-
-    public Price getBestSellingPrice() {
-        return bestSellingPrice;
+        actualityDate = new Date(System.currentTimeMillis());
+        isUpdatingNow = false;
     }
 
     private Price compare(boolean isBestBuying) {

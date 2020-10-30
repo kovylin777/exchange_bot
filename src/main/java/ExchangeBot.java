@@ -1,7 +1,6 @@
 import models.Price;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.abilitybots.api.objects.Ability;
-import org.telegram.abilitybots.api.sender.MessageSender;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import requester.PriceProvider;
@@ -9,15 +8,13 @@ import requester.PriceProvider;
 import static org.telegram.abilitybots.api.objects.Locality.ALL;
 import static org.telegram.abilitybots.api.objects.Privacy.PUBLIC;
 
-public class HelloBot extends AbilityBot {
+public class ExchangeBot extends AbilityBot {
 
     public static final String BOT_TOKEN = "1223769738:AAFZjoRhgohRvdqB0D3jFaSNft9jLcsYZi4";
 
     public static final String BOT_USERNAME = "currencykh_bot";
 
-    public final PriceProvider PRICE_PROVIDER = new PriceProvider();
-
-    public HelloBot() {
+    public ExchangeBot() {
         super(BOT_TOKEN, BOT_USERNAME);
     }
 
@@ -39,21 +36,29 @@ public class HelloBot extends AbilityBot {
             + "\uD83C\uDF0D Cайт: " + bestSellingPrice.getUrl() + "\n"
             + "\uD83D\uDCCD Адрес:\n" + bestSellingPrice.getAddress() + "\n"
             + "\uD83D\uDCF1 Телефон: " + bestSellingPrice.getPhone() + "\n"
-            + "\uD83E\uDD11 *КУРС ПРОДАЖИ: " + bestSellingPrice.getSellingRate() + "*";
+            + "\uD83E\uDD11 *КУРС ПРОДАЖИ: " + bestSellingPrice.getSellingRate() + "*"
+            + "\n\n⏰ Данные актуальны на " + PriceProvider.getDateFormatter().format(PriceProvider.getActualityDate());
         return message;
     }
 
-    public Ability saysHelloWorld() {
+    public Ability buyReply() {
         return Ability.builder()
-            .name("buy") // Name and command (/hello)
+            .name("buy")
             .info("Самыая выгодная покупка USD") // Necessary if you want it to be reported via /commands
-            .privacy(PUBLIC)  // Choose from Privacy Class (Public, Admin, Creator)
-            .locality(ALL) // Choose from Locality enum Class (User, Group, PUBLIC)
+            .privacy(PUBLIC)
+            .locality(ALL)
             .input(0) // Arguments required for command (0 for ignore)
             .action(ctx -> {
-                PRICE_PROVIDER.setPrices();
-                Price bestBuyingPrice = PRICE_PROVIDER.getBestBuyingPrice();
-                Price bestSellingPrice = PRICE_PROVIDER.getBestSellingPrice();
+                while (PriceProvider.isUpdatingNow) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Price bestBuyingPrice = PriceProvider.getBestBuyingPrice();
+                Price bestSellingPrice = PriceProvider.getBestSellingPrice();
+
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setParseMode("Markdown");
                 sendMessage.disableWebPagePreview();
