@@ -2,6 +2,7 @@ package requester.managers;
 
 import models.Price;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class ObmenkaKhUaManager extends BaseManager implements Manager {
@@ -18,8 +19,11 @@ public class ObmenkaKhUaManager extends BaseManager implements Manager {
     public void setPrice() {
         Document doc = getHtmlDocument(URL);
 
-        Elements usdBuyElements = doc.getElementsByAttributeValueMatching("name", "usd_buy");
-        Elements usdSaleElements = doc.getElementsByAttributeValueMatching("name", "usd_sale");
+        Element baseElement = doc.getElementsContainingOwnText("РОЗНИЦА")
+            .stream().filter(e -> e.hasClass("tablo-title")).findFirst().get().parent();
+
+        Elements usdBuyElements = baseElement.getElementsByAttributeValueMatching("name", "usd_buy");
+        Elements usdSaleElements = baseElement.getElementsByAttributeValueMatching("name", "usd_sale");
         price.setBuyingRate(getDecimal(usdBuyElements.get(0).html()));
         price.setSellingRate(getDecimal(usdSaleElements.get(0).html()));
         System.out.println(price);

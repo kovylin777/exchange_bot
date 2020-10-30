@@ -21,7 +21,6 @@ public class ObmenkaKharkivUaManager extends BaseManager implements Manager {
             .parents().stream().filter(e -> e.hasClass("cur_row")).findFirst().get();
         Element buyUsdElement = baseElement.getElementsByAttributeValue("class", "cur_cell c2").first();
         Element sellUsdElement = baseElement.getElementsByAttributeValue("class", "cur_cell c3").first();
-        System.out.println(buyUsdElement);
         price.setBuyingRate(getDecimal(buyUsdElement.text()));
         price.setSellingRate(getDecimal(sellUsdElement.text()));
         System.out.println(price);
