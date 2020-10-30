@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class PriceProvider {
+public class CompanyProvider {
 
     private static ArrayList<Company> companies;
 

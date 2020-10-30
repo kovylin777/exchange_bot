@@ -2,7 +2,7 @@ package models;
 
 import lombok.Data;
 import models.currency.Currency;
-import requester.PriceProvider;
+import requester.CompanyProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class Company {
     @Override
     public String toString() {
         return
-            "[" + PriceProvider.getDateFormatter().format(PriceProvider.getActualityDate()) + "] " +
+            "[" + CompanyProvider.getDateFormatter().format(CompanyProvider.getActualityDate()) + "] " +
             url + " : " +
                 currencyRates.toString().substring(1, currencyRates.toString().length() - 1);
     }

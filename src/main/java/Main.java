@@ -2,7 +2,7 @@ import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.logging.BotLogger;
-import requester.PriceProvider;
+import requester.CompanyProvider;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,11 +20,7 @@ public class Main {
             BotLogger.error("Oops, something went wrong while registering bot", e);
         }
 
-        Runnable runnable = new Runnable() {
-            public void run() {
-                new PriceProvider().setCompanies();
-            }
-        };
+        Runnable runnable = () -> new CompanyProvider().setCompanies();
         ScheduledExecutorService service = Executors
             .newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(runnable, 0, 5, TimeUnit.MINUTES);

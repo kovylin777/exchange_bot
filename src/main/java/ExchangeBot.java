@@ -4,7 +4,7 @@ import org.telegram.abilitybots.api.objects.Ability;
 import org.telegram.abilitybots.api.objects.MessageContext;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
-import requester.PriceProvider;
+import requester.CompanyProvider;
 
 import java.math.BigDecimal;
 
@@ -17,7 +17,7 @@ public class ExchangeBot extends AbilityBot {
 
     public static final String BOT_USERNAME = "currencykh_bot";
 
-    private static final PriceProvider PRICE_PROVIDER = new PriceProvider();
+    private static final CompanyProvider COMPANY_PROVIDER = new CompanyProvider();
 
     public ExchangeBot() {
         super(BOT_TOKEN, BOT_USERNAME);
@@ -47,7 +47,7 @@ public class ExchangeBot extends AbilityBot {
         + "\uD83D\uDCCD Адрес:\n" + bestSellingCompany.getAddress() + "\n"
         + "\uD83D\uDCF1 Телефон: " + bestSellingCompany.getPhone() + "\n"
         + "\uD83E\uDD11 *КУРС ПРОДАЖИ: " + sellingRate + "*"
-        + "\n\n⏰ Данные актуальны на " + PriceProvider.getDateFormatter().format(PriceProvider.getActualityDate());
+        + "\n\n⏰ Данные актуальны на " + CompanyProvider.getDateFormatter().format(CompanyProvider.getActualityDate());
     }
 
     public Ability usdReply() {
@@ -57,9 +57,7 @@ public class ExchangeBot extends AbilityBot {
             .privacy(PUBLIC)
             .locality(ALL)
             .input(0) // Arguments required for command (0 for ignore)
-            .action(ctx -> {
-                sendPrices(ctx, "USD");
-            })
+            .action(ctx -> sendPrices(ctx, "USD"))
             .build();
     }
 
@@ -70,9 +68,7 @@ public class ExchangeBot extends AbilityBot {
             .privacy(PUBLIC)
             .locality(ALL)
             .input(0) // Arguments required for command (0 for ignore)
-            .action(ctx -> {
-                sendPrices(ctx, "EUR");
-            })
+            .action(ctx -> sendPrices(ctx, "EUR"))
             .build();
     }
 
@@ -83,9 +79,7 @@ public class ExchangeBot extends AbilityBot {
             .privacy(PUBLIC)
             .locality(ALL)
             .input(0) // Arguments required for command (0 for ignore)
-            .action(ctx -> {
-                sendPrices(ctx, "PLN");
-            })
+            .action(ctx -> sendPrices(ctx, "PLN"))
             .build();
     }
 
@@ -96,22 +90,20 @@ public class ExchangeBot extends AbilityBot {
             .privacy(PUBLIC)
             .locality(ALL)
             .input(0) // Arguments required for command (0 for ignore)
-            .action(ctx -> {
-                sendPrices(ctx, "RUB");
-            })
+            .action(ctx -> sendPrices(ctx, "RUB"))
             .build();
     }
 
     private void sendPrices(MessageContext ctx, String countryCode) {
-        while (PriceProvider.isUpdatingNow) {
+        while (CompanyProvider.isUpdatingNow) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        Company bestBuyingCompany = PRICE_PROVIDER.getBestBuyingCompanyFor(countryCode);
-        Company bestSellingCompany = PRICE_PROVIDER.getBestSellingCompanyFor(countryCode);
+        Company bestBuyingCompany = COMPANY_PROVIDER.getBestBuyingCompanyFor(countryCode);
+        Company bestSellingCompany = COMPANY_PROVIDER.getBestSellingCompanyFor(countryCode);
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setParseMode("Markdown");
